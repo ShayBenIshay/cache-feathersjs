@@ -1,0 +1,74 @@
+{
+  "name": "cache",
+  "description": "Cache",
+  "version": "0.0.0",
+  "homepage": "",
+  "private": true,
+  "keywords": [
+    "feathers"
+  ],
+  "author": {},
+  "contributors": [],
+  "bugs": {},
+  "engines": {
+    "node": ">= 20.12.1"
+  },
+  "feathers": {
+    "language": "js",
+    "packager": "npm",
+    "database": "mongodb",
+    "framework": "koa",
+    "transports": [
+      "rest",
+      "websockets"
+    ],
+    "schema": "typebox"
+  },
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "files": [
+    "lib/client.js",
+    "lib/**/*.d.ts",
+    "lib/**/*.shared.js"
+  ],
+  "main": "src/client",
+  "type": "module",
+  "scripts": {
+    "start": "node src",
+    "dev": "nodemon src/",
+    "prettier": "npx prettier \"**/*.js\" --write",
+    "mocha": "cross-env NODE_ENV=test mocha test/ --recursive --exit",
+    "test": "npm run mocha",
+    "bundle:client": "npm pack --pack-destination ./public"
+  },
+  "dependencies": {
+    "@feathersjs/adapter-commons": "^5.0.31",
+    "@feathersjs/authentication": "^5.0.31",
+    "@feathersjs/authentication-client": "^5.0.31",
+    "@feathersjs/authentication-local": "^5.0.31",
+    "@feathersjs/authentication-oauth": "^5.0.31",
+    "@feathersjs/configuration": "^5.0.31",
+    "@feathersjs/errors": "^5.0.31",
+    "@feathersjs/feathers": "^5.0.31",
+    "@feathersjs/koa": "^5.0.31",
+    "@feathersjs/mongodb": "^5.0.31",
+    "@feathersjs/schema": "^5.0.31",
+    "@feathersjs/socketio": "^5.0.31",
+    "@feathersjs/transport-commons": "^5.0.31",
+    "@feathersjs/typebox": "^5.0.31",
+    "dotenv": "^16.4.7",
+    "mongodb": "^6.10.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@feathersjs/cli": "^5.0.31",
+    "@feathersjs/rest-client": "^5.0.31",
+    "axios": "^1.7.7",
+    "cross-env": "^7.0.3",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.4.2"
+  }
+}
