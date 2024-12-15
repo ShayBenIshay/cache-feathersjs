@@ -13,7 +13,13 @@ const app = koa(feathers())
 
 app.configure(configuration(configurationValidator))
 
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    allowHeaders: ['Content-Type', 'Authorization'],
+    credentials: true // Allow cookies and other credentials
+  })
+)
 app.use(serveStatic(app.get('public')))
 app.use(errorHandler())
 app.use(parseAuthentication())
@@ -23,7 +29,10 @@ app.configure(rest())
 app.configure(
   socketio({
     cors: {
-      origin: app.get('origins')
+      origin: 'http://localhost:3000',
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type'],
+      credentials: true
     }
   })
 )

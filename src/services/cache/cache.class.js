@@ -1,29 +1,27 @@
 import { MongoDBService } from '@feathersjs/mongodb'
 
-// By default calls the standard MongoDB adapter service methods but can be customized with your own functionality.
 export class CacheService extends MongoDBService {
   async find(params) {
     const { ticker, date } = params.query
     if (!ticker) return { message: 'Missing ticker query param' }
-    const queryArr = await super.find({
+    const queryResponse = await super.find({
       query: {
         ticker
       }
     })
-    if (queryArr.data.length === 0) {
+    if (queryResponse.data.length === 0) {
       return { message: `The ticker ${ticker} is not in cache` }
     }
     if (!date) {
-      return queryArr.data[0]
+      return queryResponse.data[0]
     }
 
-    if (queryArr.data.length > 0) {
-      const document = queryArr.data[0]
+    if (queryResponse.data.length > 0) {
+      const document = queryResponse.data[0]
       const target = document.prices.find((price) => price.date === date)
       if (target) return target
-      console.log(`Did not find ${date} in cache`)
     }
-    return {}
+    return { message: `The date ${date} of ticker: ${ticker} is not in cache` }
   }
 
   async create(data, params) {
@@ -32,16 +30,14 @@ export class CacheService extends MongoDBService {
         ticker: data.ticker
       }
     })
-    console.log('existing    existing    existing    existing    ')
-    console.log(existing)
     if (existing && !existing.message) {
-      const existingDocument = existing
-      const flag = existingDocument.prices?.some((price) => price.date === data.date)
-      if (flag) return existingDocument
+      const flag = existing.prices?.some((price) => price.date === data.date)
+      if (flag) {
+        return existing
+      }
+      const updatedPricesArr = [...existing.prices, { date: data.date, closePrice: data.closePrice }]
 
-      const updatedPricesArr = [...existingDocument.prices, { date: data.date, closePrice: data.closePrice }]
-
-      return this.patch(existingDocument._id, { prices: updatedPricesArr })
+      return this.patch(existing._id, { prices: updatedPricesArr })
     }
 
     const pricesArr = [{ date: data.date, closePrice: data.closePrice }]

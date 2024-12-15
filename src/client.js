@@ -1,6 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/client.html
 import { feathers } from '@feathersjs/feathers'
-// import authenticationClient from '@feathersjs/authentication-client'
+import { cacheClient } from './services/cache/cache.shared.js'
 export {}
 
 export {}

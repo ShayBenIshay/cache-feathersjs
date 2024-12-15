@@ -44,13 +44,7 @@
     "bundle:client": "npm pack --pack-destination ./public"
   },
   "dependencies": {
-    "@feathersjs/adapter-commons": "^5.0.31",
-    "@feathersjs/authentication": "^5.0.31",
-    "@feathersjs/authentication-client": "^5.0.31",
-    "@feathersjs/authentication-local": "^5.0.31",
-    "@feathersjs/authentication-oauth": "^5.0.31",
     "@feathersjs/configuration": "^5.0.31",
-    "@feathersjs/errors": "^5.0.31",
     "@feathersjs/feathers": "^5.0.31",
     "@feathersjs/koa": "^5.0.31",
     "@feathersjs/mongodb": "^5.0.31",

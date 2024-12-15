@@ -1,6 +1,3 @@
-// For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-// import { authenticate } from '@feathersjs/authentication'
-
 import { hooks as schemaHooks } from '@feathersjs/schema'
 import {
   cacheDataValidator,
@@ -14,6 +11,7 @@ import {
 } from './cache.schema.js'
 import { CacheService, getOptions } from './cache.class.js'
 import { cachePath, cacheMethods } from './cache.shared.js'
+import { logCreateDocument } from '../../hooks/log-create-document.js'
 
 export * from './cache.class.js'
 export * from './cache.schema.js'
@@ -45,7 +43,8 @@ export const cache = (app) => {
       remove: []
     },
     after: {
-      all: []
+      all: [],
+      create: [logCreateDocument]
     },
     error: {
       all: []
