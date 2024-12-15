@@ -2,7 +2,6 @@ import { feathers } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
 import socketio from '@feathersjs/socketio'
-
 import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
 import { mongodb } from './mongodb.js'
@@ -15,9 +14,9 @@ app.configure(configuration(configurationValidator))
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_CLIENT,
     allowHeaders: ['Content-Type', 'Authorization'],
-    credentials: true // Allow cookies and other credentials
+    credentials: true
   })
 )
 app.use(serveStatic(app.get('public')))
@@ -29,7 +28,7 @@ app.configure(rest())
 app.configure(
   socketio({
     cors: {
-      origin: 'http://localhost:3000',
+      origin: process.env.FRONTEND_CLIENT,
       methods: ['GET', 'POST'],
       allowedHeaders: ['Content-Type'],
       credentials: true

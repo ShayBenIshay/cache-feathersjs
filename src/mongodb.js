@@ -1,11 +1,11 @@
 import { MongoClient } from 'mongodb'
+import * as dotenv from 'dotenv'
 
-// const mongodbUri = process.env.MONGODB_URI
-// if (!mongodbUri) {
-//   throw new Error('MONGODB_URI environment variable is not set')
-// }
+dotenv.config()
+
 export const mongodb = (app) => {
-  const connection = app.get('mongodb')
+  const connection = process.env.MONGODB_URI
+
   const database = new URL(connection).pathname.substring(1)
   const mongoClient = MongoClient.connect(connection).then((client) => client.db(database))
 
