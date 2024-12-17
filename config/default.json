@@ -1,5 +1,5 @@
 {
-  "host": "https://smart-investor.onrender.com",
+  "host": "localhost",
   "port": 3031,
   "public": "./public/",
   "origins": [
