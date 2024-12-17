@@ -6,7 +6,6 @@ class Throttle {
     this.instance = this
 
     this.maxCallsPerMinute = maxCallsPerMinute
-    this.apiKey = process.env.POLYGON_API_KEY
     this.callQueue = []
     this.callCount = 0
     this.isRunning = false
@@ -38,7 +37,7 @@ class Throttle {
 
           const data = response.data
 
-          console.log('API Response:', data)
+          console.log('API Response:', { ticker: data.symbol, close: data.close })
           resolve(data)
         } catch (error) {
           console.error('error', error)
