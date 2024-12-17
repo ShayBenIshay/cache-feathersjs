@@ -13,7 +13,6 @@ export class PolygonApiService {
 
     try {
       const data = await enqueue(ticker, date, priority)
-      console.log('data fetched', data)
       return [{ close: data?.close }]
     } catch (error) {
       console.error('error accured in queue', error)
