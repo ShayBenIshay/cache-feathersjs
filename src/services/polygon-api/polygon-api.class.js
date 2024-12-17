@@ -11,12 +11,12 @@ export class PolygonApiService {
       throw new Error('Both ticker and date are required.')
     }
 
-    try {
-      const data = await enqueue(ticker, date, priority)
-      return [{ close: data?.close }]
-    } catch (error) {
-      console.error('error accured in queue', error)
-    }
+    return enqueue(ticker, date, priority)
+      .then((data) => [{ close: data?.close }])
+      .catch((error) => {
+        // console.log(error)
+        return undefined
+      })
   }
 
   async get(id, _params) {
