@@ -7,45 +7,34 @@ class Throttle {
 
     this.maxCallsPerMinute = maxCallsPerMinute
     this.callQueue = []
-    this.callSet = new Set()
+    this.pendingRequests = new Map()
     this.callCount = 0
     this.isRunning = false
-    this.resetRateLimit()
+
+    this.startRateLimitTimer()
+  }
+
+  startRateLimitTimer() {
+    setInterval(() => {
+      this.resetRateLimit()
+    }, 60000)
   }
 
   resetRateLimit() {
-    const intervalId = setInterval(() => {
-      if (this.callQueue.length > 0) {
-        console.log('Resetting rate limit...')
-
-        this.callCount = 0
-
-        this.callQueue.forEach((call, index) => {
-          console.log(
-            `Queue Item ${index + 1}: Ticker: ${call.ticker}, Date: ${call.date}, Priority: ${call.priority}`
-          )
-        })
-        this.processQueue()
-      } else {
-        console.log('No pending calls. Clearing interval...')
-        clearInterval(intervalId)
-      }
-    }, 60000)
+    console.log('Resetting rate limit...')
+    console.log('calls awaiting', this.callQueue.length)
+    this.callCount = 0
+    this.processQueue()
   }
 
   enqueue(ticker, date, priority = 'system') {
     return new Promise((resolve, reject) => {
-      const requestKey = `${ticker}_${date}` // Unique key for each request
+      const requestKey = `${ticker}_${date}`
 
-      // Prevent duplicate requests
-      if (this.callSet.has(requestKey)) {
-        console.log(`Duplicate request ignored: ${requestKey}`)
-        reject(new Error('Duplicate request ignored'))
-        return
+      if (this.pendingRequests.has(requestKey)) {
+        console.log(`Duplicate request sharing promise: ${requestKey}`)
+        return this.pendingRequests.get(requestKey).then(resolve).catch(reject)
       }
-
-      // Add to tracking set
-      this.callSet.add(requestKey)
 
       const apiCall = async () => {
         const apiKey = process.env.POLYGON_API_KEY
@@ -59,23 +48,25 @@ class Throttle {
           console.log('API Response:', { ticker, date, close: data?.close })
           resolve(data)
         } catch (error) {
-          // console.error('Error:', error)
           reject(error)
         } finally {
-          // Remove from tracking set when the call completes
-          this.callSet.delete(requestKey)
+          this.pendingRequests.delete(requestKey)
         }
       }
 
-      const callData = { apiCall, ticker, date, priority }
+      const apiCallPromise = new Promise((apiResolve, apiReject) => {
+        const callData = { apiCall, ticker, date, priority, resolve: apiResolve, reject: apiReject }
 
-      if (priority === 'user') {
-        this.callQueue.unshift(callData)
-      } else {
-        this.callQueue.push(callData)
-      }
+        if (priority === 'user') {
+          this.callQueue.unshift(callData)
+        } else {
+          this.callQueue.push(callData)
+        }
 
-      this.processQueue()
+        this.processQueue()
+      })
+
+      this.pendingRequests.set(requestKey, apiCallPromise)
     })
   }
 
@@ -92,6 +83,6 @@ class Throttle {
     this.isRunning = false
   }
 }
-const throttle = new Throttle(5)
 
+const throttle = new Throttle(5)
 export default throttle.enqueue.bind(throttle)

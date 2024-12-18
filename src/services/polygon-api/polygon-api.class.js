@@ -14,7 +14,6 @@ export class PolygonApiService {
     return enqueue(ticker, date, priority)
       .then((data) => [{ close: data?.close }])
       .catch((error) => {
-        // console.log(error)
         return undefined
       })
   }
